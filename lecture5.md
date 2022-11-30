@@ -312,7 +312,8 @@ https://zenn.dev/banrih/articles/f22f0a70bbead2a02110
 
 ## インフラ構成図
 
-![picture 4](images/0994fd11ab420a3374415fb307a716fe779132a8ee32e25ef5d0ea686e612a24.png)
+![picture 1](images/f15103d80fcaaa720ec3a60184ccbb43a14568969ef4e540186ba058201fe054.png)
+
 
 ## 今回の学習を終えての感想
 
