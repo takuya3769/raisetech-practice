@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: SecurityGroup Create
+
+Resources:
+  SecurityGroup01:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: ALB-Secutity
+      GroupDescription: ALB-SecutityGroup
+      VpcId: !ImportValue VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: "80"
+          ToPort: "80"
+        - IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: "443"
+          ToPort: "443"
+        - IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: "22"
+          ToPort: "22"
+        - IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: "3000"
+          ToPort: "3000"
+
+  SecurityGroup02:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: EC2-SecurityGroup
+      GroupDescription: EC2-SecurityGroup
+      VpcId: !ImportValue VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0
+
+  SecurityGroup03:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: DB-SecurityGroup
+      GroupDescription: DB-SecurityGroup
+      VpcId: !ImportValue VPC
+
+  SecurityGroupIngress1:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      GroupId: !Ref SecurityGroup01
+      SourceSecurityGroupId: !Ref SecurityGroup01
+
+  SecurityGroupIngress2:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 3306
+      ToPort: 3306
+      GroupId: !Ref SecurityGroup02
+      SourceSecurityGroupId: !Ref SecurityGroup02
+
+Outputs:
+  StackSecurity01:
+    Description: SecurityGroup1 ID
+    Value: !Ref SecurityGroup01
+    Export:
+      Name: !Sub "${AWS::StackName}-group01"
+
+  StackSecurity02:
+    Description: SecurityGroup2 ID
+    Value: !Ref SecurityGroup02
+    Export:
+      Name: !Sub "${AWS::StackName}-group02"
+
+  StackSecurity03:
+    Description: SecurityGroup03 ID
+    Value: !Ref SecurityGroup03
+    Export:
+      Name: !Sub "${AWS::StackName}-group03"
