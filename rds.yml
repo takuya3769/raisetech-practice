@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Provision RDS
+
+Parameters:
+  MasterUser:
+    Default: admin
+    Type: String
+  MasterUserPassword:
+    Default: kkx3dKev5iHV
+    Type: String
+  EngineVersion:
+    Default: 8.0.28
+    Type: String
+  StorageType:
+    Default: gp2
+    Type: String
+  InstanceClass:
+    Default: db.t2.micro
+    Type: String
+  StorageSize:
+    Default: 20
+    Type: String
+
+Resources:
+  Databases:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: RDSInstance
+      DBInstanceClass: !Ref InstanceClass
+      Engine: mysql
+      EngineVersion: !Ref EngineVersion
+      MasterUsername: !Ref MasterUser
+      MasterUserPassword: !Ref MasterUserPassword
+      DBName: Databases1
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      StorageType: !Ref StorageType
+      AllocatedStorage: !Ref StorageSize
+      PubliclyAccessible: "false"
+      VPCSecurityGroups:
+        - !ImportValue Security-group03
+      Tags:
+        - Key: Name
+          Value: RDSInstance
+
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: DBSubnetGroup create
+      DBSubnetGroupName: DBSubnet
+      SubnetIds:
+        - !ImportValue VPC-PrivateSubnet1A
+        - !ImportValue VPC-PrivateSubnet1C
+      Tags:
+        - Key: Name
+          Value: DBSubnet
