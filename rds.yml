@@ -38,6 +38,7 @@ Resources:
       AllocatedStorage: !Ref StorageSize
       PubliclyAccessible: "false"
       VPCSecurityGroups:
+        - !ImportValue Security-group02
         - !ImportValue Security-group03
       Tags:
         - Key: Name
