@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Provision EC2
+
+Resources:
+  EC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-072bfb8ae2c884cc4
+      KeyName: my_key2
+      InstanceType: t2.micro
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          SubnetId: !ImportValue VPC-PublicSubnet1A
+          GroupSet:
+            - !ImportValue Security-group02
+      Tags:
+        - Key: Name
+          Value: EC2
+
+Outputs:
+  StackEC2:
+    Description: EC2 ID
+    Value: !Ref EC2
+    Export:
+      Name: !Sub "${AWS::StackName}"
