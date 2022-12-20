@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: ALB create
+
+Resources:
+  InternetALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: ALB
+      Scheme: internet-facing
+      Type: application
+      SecurityGroups:
+        - !ImportValue Security-group01
+      Subnets:
+        - !ImportValue VPC-PublicSubnet1A
+        - !ImportValue VPC-PublicSubnet1C
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: Target-01
+      VpcId: !ImportValue VPC
+      Protocol: HTTP
+      ProtocolVersion: HTTP1
+      Port: 80
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /
+      HealthCheckPort: traffic-port
+      HealthyThresholdCount: 5
+      UnhealthyThresholdCount: 2
+      HealthCheckTimeoutSeconds: 5
+      HealthCheckIntervalSeconds: 30
+      Matcher:
+        HttpCode: 200
+      Targets:
+        - Id: !ImportValue EC2
+          Port: 80
+      TargetType: instance
+
+  ALBListenerHTTP:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref InternetALB
